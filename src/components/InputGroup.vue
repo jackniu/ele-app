@@ -2,7 +2,7 @@
   <div class="text_group">
     <!-- 组件结构 -->
     <!-- 组件容器 -->
-    <div class="input_group">
+    <div class="input_group" :class="{'is-invalid':error}">
       <!-- 输入框 -->
       <input
         :type="type"
@@ -12,10 +12,10 @@
         @input="$emit('input', $event.target.value)"
       >
       <!-- 输入框后面的按钮 -->
-      <button v-if="btnTitle" :disabled="disabled" @click="$emit(btnClcik)">{{ btnTitle }}</button>
-      <!-- 错误提醒 -->
-      <div v-if="error" class="invalid-feedback">{{ error }}</div>
+      <button v-if="btnTitle" :disabled="disabled" @click="$emit('btnClick')">{{ btnTitle }}</button>
     </div>
+    <!-- 错误提醒 -->
+    <div v-if="error" class="invalid-feedback">{{ error }}</div>
   </div>
 </template>
 <script>

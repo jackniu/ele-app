@@ -4,7 +4,7 @@
             <img src="../assets/logo.jpg" alt="">
         </div>
         <InputGroup type="number" v-model="phone" placeholder="手机号"
-         :btnTitle="btnTitle" :disabled="disabled" :error="errors.phone" />
+         :btnTitle="btnTitle" :disabled="disabled" :error="errors.phone" @btnClick="getVerifyCode" />
         <InputGroup type="number" v-model="verifyCode" placeholder="验证码"
          :error="errors.code" />
         <!-- 用户服务协议 -->
@@ -30,6 +30,45 @@ export default {
             errors: {},
             btnTitle: "获取验证码",
             disabled: false
+        }
+    },
+    methods: {
+        getVerifyCode() {
+            if (this.validatePhone()) {
+                //发送网络请求
+                this.validateBtn();
+            }
+        },
+        validateBtn() {
+            let time = 3;
+            let timer = setInterval(() => {
+                if (time == 0) {
+                    clearInterval(timer);
+                    this.btnTitle = "获取验证码";
+                    this.disabled = false;
+                } else {
+                    // 倒计时
+                    this.btnTitle = time + "秒后重试";
+                    this.disabled = true;
+                    time--;
+                }
+            },1000);
+        },
+        validatePhone() {
+            if(!this.phone) {
+                this.errors = {
+                    phone: "手机号码不能为空"
+                };
+                return false;
+            } else if (!/^1[345678]\d{9}$/.test(this.phone)) {
+                this.errors = {
+                    phone: "请填写正确的手机号码"
+                };
+                return false;
+            } else {
+                this.errors = {};
+                return true;
+            }
         }
     },
     components: {
