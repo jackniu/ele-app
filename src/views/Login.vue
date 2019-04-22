@@ -15,12 +15,13 @@
         </div>
         <!-- 登录按钮 -->
         <div class="login_btn">
-            <button>登录</button>
+            <button :disabled="isClick" @click="handleLogin()">登录</button>
         </div>
     </div>
 </template>
 <script>
 import InputGroup from '../components/InputGroup.vue';
+import { log } from 'util';
 export default {
     name: "login",
     data() {
@@ -32,7 +33,31 @@ export default {
             disabled: false
         }
     },
+    computed: {
+        isClick() {
+            if (!this.phone || !this.verifyCode) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    },
     methods: {
+        handleLogin() {
+            // 取消错误提醒
+            this.errors = {};
+            // 发送请求
+            this.$axios.post('/api/posts/sms_back', {
+                phone: this.phone,
+                code: this.verifyCode
+            })
+            .then(res => {
+                console.log(res);
+                // 检测成功 设置登录状态并跳转到/
+                localStorage.setItem('ele_login', true);
+                this.$router.push('/');
+            })
+        },
         getVerifyCode() {
             if (this.validatePhone()) {
                 this.validateBtn();
@@ -44,6 +69,12 @@ export default {
                 })
                 .then(res => {
                     console.log(res);
+                })
+                .catch(err => {
+                    // 返回错误信息
+                    this.errors = {
+                        code: this.err.response.data.msg
+                    }
                 })
             }
         },
