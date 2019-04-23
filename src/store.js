@@ -34,7 +34,7 @@ const mutations = {
     if (address) {
       state.address = address;
     } else {
-      state.address = null;
+      state.address = '';
     }
   }
 };
@@ -50,13 +50,8 @@ const actions = {
 };
 
 export default new Vuex.Store({
-  state: {
-
-  },
-  mutations: {
-
-  },
-  actions: {
-
-  }
-})
+  state,
+  getters,
+  mutations,
+  actions
+});
