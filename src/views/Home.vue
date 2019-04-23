@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div class="header">
-      <div class="address_map">
+      <div class="address_map" @click="$router.push('/address')">
         <i class="fa fa-map-marker"></i>
         <span>{{ address }}</span>
         <i class="fa fa-sort-desc"></i>
@@ -24,7 +24,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .home {
   width: 100%;
   height: 100%;
