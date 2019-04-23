@@ -20,11 +20,11 @@
 </template>
 <script>
 export default {
-    name: "inputGroup",
+    name: 'inputGroup',
     props: {
       type: {
         type: String,
-        default: "text"
+        default: 'text'
       },
       value: String,
       placeholder: String,

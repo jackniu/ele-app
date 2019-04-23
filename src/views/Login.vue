@@ -23,13 +23,13 @@
 import InputGroup from '../components/InputGroup.vue';
 import { log } from 'util';
 export default {
-    name: "login",
+    name: 'login',
     data() {
         return {
-            phone: "",
-            verifyCode: "",
+            phone: '',
+            verifyCode: '',
             errors: {},
-            btnTitle: "获取验证码",
+            btnTitle: '获取验证码',
             disabled: false
         }
     },
@@ -63,8 +63,8 @@ export default {
                 this.validateBtn();
                 //发送网络请求
                 this.$axios.post('/api/posts/sms_send',{
-                    tpl_id: "136729",
-                    key: "795be723dd9e88c3ea98e2b6713ab795",
+                    tpl_id: '136729',
+                    key: '795be723dd9e88c3ea98e2b6713ab795',
                     phone: this.phone
                 })
                 .then(res => {
@@ -83,11 +83,11 @@ export default {
             let timer = setInterval(() => {
                 if (time == 0) {
                     clearInterval(timer);
-                    this.btnTitle = "获取验证码";
+                    this.btnTitle = '获取验证码';
                     this.disabled = false;
                 } else {
                     // 倒计时
-                    this.btnTitle = time + "秒后重试";
+                    this.btnTitle = time + '秒后重试';
                     this.disabled = true;
                     time--;
                 }
@@ -96,12 +96,12 @@ export default {
         validatePhone() {
             if(!this.phone) {
                 this.errors = {
-                    phone: "手机号码不能为空"
+                    phone: '手机号码不能为空'
                 };
                 return false;
             } else if (!/^1[345678]\d{9}$/.test(this.phone)) {
                 this.errors = {
-                    phone: "请填写正确的手机号码"
+                    phone: '请填写正确的手机号码'
                 };
                 return false;
             } else {
