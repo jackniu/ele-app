@@ -3,6 +3,7 @@
     <router-view/>
   </div>
 </template>
+
 <script>
 export default {
   name: 'app',
@@ -20,9 +21,9 @@ export default {
           timeout: 10000
         })
 
-        geolocation.getCurrentPosition()
-        AMap.event.addListener(geolocation, 'complete', onComplete)
-        AMap.event.addListener(geolocation, 'error', onError)
+        geolocation.getCurrentPosition();
+        AMap.event.addListener(geolocation, 'complete', onComplete);
+        AMap.event.addListener(geolocation, 'error', onError);
 
         function onComplete (data) {
           // data是具体的定位信息
@@ -39,7 +40,7 @@ export default {
       })
     },
     getLngLatLocation() {
-      self = this;
+      const self = this;
       AMap.plugin('AMap.CitySearch', function () {
         var citySearch = new AMap.CitySearch()
         citySearch.getLocalCity(function (status, result) {
@@ -64,7 +65,9 @@ export default {
                         province: result.province
                       },
                       formattedAddress: data.regeocode.formattedAddress
-                    })
+                    });
+
+                    self.$store.dispatch('setAddress', data.regeocode.formattedAddress);
                 }
               })
             })
