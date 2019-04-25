@@ -11,16 +11,44 @@
             <div class="location">
                 <Location :address="city" />
             </div>
+            <Alphabet :cityInfo="cityInfo" :keys="keys" />
         </div>
     </div>
 </template>
+
 <script>
-import Location from '../components/Location'
+import Location from '../components/Location';
+import Alphabet from '../components/Alphabet';
 export default {
     name: 'City',
     data() {
         return {
-            city_val: ''
+            city_val: '',
+            cityInfo: null,
+            keys: []
+        }
+    },
+    created() {
+        this.getCityInfo();
+    },
+    methods: {
+        getCityInfo() {
+            this.$axios('/api/posts/cities')
+                .then(res => {
+                    // console.log(res.data);
+                    // 处理key 计算key
+                    this.cityInfo = res.data;
+                    this.keys = Object.keys(res.data);
+                    // console.log(this.keys);
+                    // 移出掉hotcities这个key
+                    this.keys.pop();
+                    // key排序
+                    this.keys.sort();
+                    console.log(this.keys);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
     },
     computed: {
@@ -32,7 +60,8 @@ export default {
       }
     },
     components: {
-        Location
+        Location,
+        Alphabet
     }
 }
 </script>
