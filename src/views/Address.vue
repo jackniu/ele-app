@@ -10,10 +10,10 @@
         <i class="fa fa-search"></i>
         <input type="text" v-model="search_val" placeholder="小区/写字楼/学校等">
       </div>
-      <Location :address="address" />
+      <Location @click="selectAddress" :address="address" />
     </div>
     <div class="area">
-      <ul class="area_lis" v-for="(item, index) in areaList" :key="index">
+      <ul class="area_list" v-for="(item, index) in areaList" :key="index">
         <li @click="selectAddress(item)">
           <h4>{{ item.name }}</h4>
           <p>{{ item.district }}{{ item.address }}</p>
@@ -62,7 +62,14 @@ export default {
       })
     },
     selectAddress(item) {
-      this.$store.dispatch('setAddress', item.district + item.address + item.name);
+      if (item) {
+        this.$store.dispatch('setAddress', item.district + item.address + item.name);
+        this.$router.push('/home');
+      } else {
+        this.$store.dispatch('setAddress',this.address);
+      }
+
+      // 跳转到home
       this.$router.push('/home');
     }
   },

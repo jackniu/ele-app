@@ -5,7 +5,7 @@
                <i class="fa fa-search"></i>
                <input type="text" v-model="city_val" placeholder="输入城市名">
             </div>
-            <button @click="$router.go(-1)">取消</button>
+            <button @click="$router.push({name:'address', params:{city:city}})">取消</button>
         </div>
         <div style="height:100%" v-if="searchList.length == 0">
             <div class="location">
@@ -15,7 +15,7 @@
         </div>
         <div class="search_list" v-else>
             <ul>
-                <li v-for="(item,index) in searchList" :key="index">{{ item.name }}</li>
+                <li @click="selectCity(item)" v-for="(item,index) in searchList" :key="index">{{ item.name }}</li>
             </ul>
         </div>
     </div>
