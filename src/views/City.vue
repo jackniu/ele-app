@@ -7,11 +7,16 @@
             </div>
             <button @click="$router.go(-1)">取消</button>
         </div>
-        <div style="height:100%">
+        <div style="height:100%" v-if="searchList.length == 0">
             <div class="location">
                 <Location :address="city" />
             </div>
-            <Alphabet ref="allcity" :cityInfo="cityInfo" :keys="keys" />
+            <Alphabet @selectCity="selectCity" ref="allcity" :cityInfo="cityInfo" :keys="keys" />
+        </div>
+        <div class="search_list" v-else>
+            <ul>
+                <li v-for="(item,index) in searchList" :key="index">{{ item.name }}</li>
+            </ul>
         </div>
     </div>
 </template>
@@ -25,11 +30,19 @@ export default {
         return {
             city_val: '',
             cityInfo: null,
-            keys: []
+            keys: [],
+            allCities: [],
+            searchList: []
         }
     },
     created() {
         this.getCityInfo();
+    },
+    watch: {
+        city_val() {
+            // console.log(this.city_val);
+            this.searchCity();
+        }
     },
     methods: {
         getCityInfo() {
@@ -48,10 +61,35 @@ export default {
                     this.$nextTick(() => {
                         this.$refs.allcity.initScroll();
                     })
+
+                    // 存储所有城市，用来搜索过滤
+                    this.keys.forEach(key => {
+                        // console.log(key);
+                        this.cityInfo[key].forEach(city => {
+                            // console.log(city)
+                            this.allCities.push(city);
+                        })
+                    })
                 })
                 .catch(err => {
                     console.log(err);
                 });
+        },
+        selectCity(city) {
+            // console.log(city);
+            this.$router.push({name:'address',params:{city:city.name}});
+        },
+        searchCity() {
+            if (!this.city_val) {
+                // 如果搜索框为空 则数组置空
+                this.searchList = [];
+            } else {
+                // 根据输入框的关键字检索城市，并存入到searchList数组中
+                this.searchList = this.allCities.filter(item => {
+                    return item.name.indexOf(this.city_val) !=-1;
+                })
+                // console.log(this.searchList);
+            }
         }
     },
     computed: {
