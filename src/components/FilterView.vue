@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'open':isSort}" @click.self="hideView">
+  <div :class="{'open':isSort || isScreen}" @click.self="hideView">
     <!-- 导航 -->
     <div v-if="filterData" class="filter_wrap">
       <aside class="filter">
@@ -23,6 +23,23 @@
         </li>
       </ul>
     </section>
+    <section class="filter-extend" v-if="isScreen">
+      <div class="filter-sort">
+        <div class="morefilter" v-for="(screen,index) in filterData.screenBy" :key="index">
+          <p class="title">{{screen.title}}</p>
+          <ul>
+            <li v-for="(item,i) in screen.data" :key="i">
+              <img v-if="item.icon" :src="item.icon" alt>
+              <span>{{item.name}}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="morefilter-btn">
+        <span class="morefilter-clear">清空</span>
+        <span class="morefilter-ok">确定</span>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -36,7 +53,8 @@ export default {
     return {
       currentFilter: 0,
       isSort: false,
-      currentSort: 0
+      currentSort: 0,
+      isScreen: false
     }
   },
   methods: {
@@ -55,6 +73,11 @@ export default {
           this.$emit('update', { condition: this.filterData.navTab[2].condition });
           this.hideView();
           break;
+        case 3:
+          this.isScreen = true;
+          this.isSort = false;
+          this.$emit('searchFixed', true);
+          break;
         default:
           this.hideView();
           break;
@@ -62,6 +85,7 @@ export default {
     },
     hideView() {
       this.isSort = false;
+      this.isScreen = false;
       this.$emit('searchFixed', false);
     },
     selectSort(item, index) {
