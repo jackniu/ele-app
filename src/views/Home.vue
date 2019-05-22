@@ -34,16 +34,20 @@
     </div>
     <!-- 推荐商家 -->
     <div class="shoplist-title">推荐商家</div>
+    <!-- 导航 -->
+    <FilterView :filterData="filterData"/>
   </div>
 </template>
 <script>
 import { Swipe, SwipeItem } from 'mint-ui'
+import FilterView from '../components/FilterView'
 export default {
   name: 'home',
   data() {
     return {
       swipeImgs: [],
-      entries: []
+      entries: [],
+      filterData: null
     }
   },
   computed: {
@@ -63,11 +67,19 @@ export default {
   methods: {
     getData() {
       this.$axios('/api/profile/shopping').then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         this.swipeImgs = res.data.swipeImgs;
         this.entries = res.data.entries;
+      });
+      this.$axios('/api/profile/filter').then(res => {
+        console.log(res.data);
+        this.filterData = res.data;
       })
+
     }
+  },
+  components: {
+    FilterView
   }
 }
 </script>
