@@ -7,7 +7,7 @@
         <i class="fa fa-sort-desc"></i>
       </div>
     </div>
-    <div class="search_wrap">
+    <div class="search_wrap" :class="{'fixedview':showFilter}">
       <div class="shop_search">
         <i class="fa fa-search"></i>
         搜索商家 商家名称
@@ -35,7 +35,7 @@
     <!-- 推荐商家 -->
     <div class="shoplist-title">推荐商家</div>
     <!-- 导航 -->
-    <FilterView :filterData="filterData"/>
+    <FilterView :filterData="filterData" @searchFixed="showFilterView"/>
   </div>
 </template>
 <script>
@@ -47,7 +47,8 @@ export default {
     return {
       swipeImgs: [],
       entries: [],
-      filterData: null
+      filterData: null,
+      showFilter: false
     }
   },
   computed: {
@@ -75,7 +76,9 @@ export default {
         console.log(res.data);
         this.filterData = res.data;
       })
-
+    },
+    showFilterView(isShow) {
+      this.showFilter = isShow;
     }
   },
   components: {
@@ -184,5 +187,11 @@ export default {
 }
 .shoplist-title:after {
   margin-left: 3.466667vw;
+}
+.fixedview {
+  width: 100%;
+  position: fixed;
+  top: 0px;
+  z-index: 999;
 }
 </style>
