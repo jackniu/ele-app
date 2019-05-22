@@ -1,5 +1,6 @@
 <template>
   <div :class="{'open':isSort}" @click.self="hideView">
+    <!-- 导航 -->
     <div v-if="filterData" class="filter_wrap">
       <aside class="filter">
         <div
@@ -14,6 +15,14 @@
         </div>
       </aside>
     </div>
+    <section class="filter-extend" v-if="isSort">
+      <ul>
+        <li v-for="(item,index) in filterData.sortBy" :key="index" @click="selectSort(item,index)">
+          <span :class="{'selectName':currentSort == index}">{{item.name}}</span>
+          <i class="fa fa-check" v-show="currentSort == index"></i>
+        </li>
+      </ul>
+    </section>
   </div>
 </template>
 
@@ -26,7 +35,8 @@ export default {
   data() {
     return {
       currentFilter: 0,
-      isSort: false
+      isSort: false,
+      currentSort: 0
     }
   },
   methods: {
@@ -37,6 +47,14 @@ export default {
           this.isSort = true;
           this.$emit('searchFixed', true);
           break;
+        case 1:
+          this.$emit('update', { condition: this.filterData.navTab[1].condition });
+          this.hideView();
+          break;
+        case 2:
+          this.$emit('update', { condition: this.filterData.navTab[2].condition });
+          this.hideView();
+          break;
         default:
           this.hideView();
           break;
@@ -45,6 +63,14 @@ export default {
     hideView() {
       this.isSort = false;
       this.$emit('searchFixed', false);
+    },
+    selectSort(item, index) {
+      this.currentSort = index;
+      this.filterData.navTab[0].name = this.filterData.sortBy[index].name;
+      this.hideView();
+
+      // 更新数据
+      this.$emit('update', { condition: item.code });
     }
   }
 }

@@ -35,12 +35,13 @@
     <!-- 推荐商家 -->
     <div class="shoplist-title">推荐商家</div>
     <!-- 导航 -->
-    <FilterView :filterData="filterData" @searchFixed="showFilterView"/>
+    <FilterView :filterData="filterData" @searchFixed="showFilterView" @update="update"/>
   </div>
 </template>
 <script>
 import { Swipe, SwipeItem } from 'mint-ui'
 import FilterView from '../components/FilterView'
+import { log } from 'util';
 export default {
   name: 'home',
   data() {
@@ -79,6 +80,9 @@ export default {
     },
     showFilterView(isShow) {
       this.showFilter = isShow;
+    },
+    update(condition) {
+      // console.log(condition);
     }
   },
   components: {
