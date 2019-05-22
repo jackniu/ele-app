@@ -6,11 +6,14 @@
         <span>{{ address }}</span>
         <i class="fa fa-sort-desc"></i>
       </div>
+    </div>
+    <div class="search_wrap">
       <div class="shop_search">
         <i class="fa fa-search"></i>
         搜索商家 商家名称
       </div>
     </div>
+    <div id="container" style="height:2000px"></div>
   </div>
 </template>
 <script>
@@ -37,9 +40,16 @@ export default {
   overflow: auto;
   box-sizing: border-box;
 }
-.header {
+.search_wrap {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  box-sizing: border-box;
+}
+.header,
+.search_wrap {
   background-color: #009eef;
-  padding: 16px;
+  padding: 10px 16px;
 }
 .header .address_map {
   color: #fff;
@@ -56,8 +66,8 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.header .shop_search {
-  margin-top: 10px;
+.search_wrap .shop_search {
+  /* margin-top: 10px; */
   background-color: #fff;
   padding: 10px 0;
   border-radius: 4px;
