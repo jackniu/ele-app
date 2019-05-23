@@ -13,15 +13,9 @@
         </div>
         <div class="index-rateWrap">
           <div>
-            <div class="Rating-gray">
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-            </div>
+            <Rating :rating="restaurant.rating"/>
             <span class="rate">{{restaurant.rating}}</span>
-            <span>月售{{restaurant.recent_order_num}}</span>
+            <span>月售{{restaurant.recent_order_num}}单</span>
           </div>
           <div class="delivery" v-if="restaurant.delivery_mode">
             <span class="icon-hollow">{{restaurant.delivery_mode.text}}</span>
@@ -34,7 +28,7 @@
             <span>{{restaurant.float_delivery_fee}}</span>
           </div>
           <div class="index-distanceWrap">
-            <span>1km</span>
+            <span>{{(restaurant.distance / 1000).toFixed(2)}}km</span>
             |
             <span>{{restaurant.order_lead_time}}分钟</span>
           </div>
@@ -45,10 +39,14 @@
 </template>
 
 <script>
+import Rating from './Rating';
 export default {
   name: 'IndexShop',
   props: {
     restaurant: Object
+  },
+  components: {
+    Rating
   }
 }
 </script>
@@ -135,11 +133,6 @@ export default {
   background-color: #2395ff;
   padding: 2px;
   box-sizing: border-box;
-}
-.Rating-gray {
-  margin-right: 1.066667vw;
-  color: #ffbe00;
-  display: inline-block;
 }
 </style>
 
