@@ -28,7 +28,12 @@
         <div class="morefilter" v-for="(screen,index) in filterData.screenBy" :key="index">
           <p class="title">{{screen.title}}</p>
           <ul>
-            <li v-for="(item,i) in screen.data" :key="i">
+            <li
+              v-for="(item,i) in screen.data"
+              :key="i"
+              :class="{'selected':item.select}"
+              @click="selectScreen(item,screen)"
+            >
               <img v-if="item.icon" :src="item.icon" alt>
               <span>{{item.name}}</span>
             </li>
@@ -36,8 +41,8 @@
         </div>
       </div>
       <div class="morefilter-btn">
-        <span class="morefilter-clear">清空</span>
-        <span class="morefilter-ok">确定</span>
+        <span class="morefilter-clear" :class="{'edit':edit}" @click="clearFilter">清空</span>
+        <span class="morefilter-ok" @click="filterOk">确定</span>
       </div>
     </section>
   </div>
@@ -55,6 +60,19 @@ export default {
       isSort: false,
       currentSort: 0,
       isScreen: false
+    }
+  },
+  computed: {
+    edit() {
+      let edit = false;
+      this.filterData.screenBy.forEach(screen => {
+        screen.data.forEach(item => {
+          if (item.select) {
+            edit = true;
+          }
+        })
+      });
+      return edit;
     }
   },
   methods: {
@@ -95,6 +113,49 @@ export default {
 
       // 更新数据
       this.$emit('update', { condition: item.code });
+    },
+    selectScreen(item, screen) {
+      if (screen.id !== 'MPI') {
+        // 单选
+        // console.log(screen);
+        screen.data.forEach(ele => {
+          // console.log(ele);
+          ele.select = false;
+        });
+      }
+      item.select = !item.select;
+    },
+    clearFilter() {
+      this.filterData.screenBy.forEach(screen => {
+        screen.data.forEach(item => {
+          item.select = false;
+        })
+      });
+    },
+    filterOk() {
+      let mpiStr = '';
+      let screenData = {
+        MPI: '',
+        offer: '',
+        per: ''
+      };
+      this.filterData.screenBy.forEach(screen => {
+        screen.data.forEach((item, index) => {
+          if (item.select) {
+            if (screen.id !== 'MPI') {
+              // 单选
+              screenData[screen.id] = item.code;
+            } else {
+              // 多选
+              mpiStr += item.code + ',';
+              screenData[screen.id] = mpiStr;
+            }
+          }
+        })
+      });
+      // console.log(mpiStr);
+      this.$emit('update', { condition: screenData });
+      this.hideView();
     }
   }
 }
