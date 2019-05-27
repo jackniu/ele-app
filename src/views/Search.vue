@@ -5,15 +5,23 @@
       <form class="search_wrap">
         <i class="fa fa-search"></i>
         <input type="text" v-model="key_word" placeholder="输入商家，商品信息">
-        <button>搜索</button>
+        <button @click.prevent="searchHandle">搜索</button>
       </form>
     </div>
-    <div class="shop" v-if="result">
+    <div class="shop" v-if="result && !showShop">
+      <div v-if="empty" class="empty_wrap">
+        <img src="https://fuss10.elemecdn.com/d/60/70008646170d1f654e926a2aaa3afpng.png" alt>
+        <div class="empty_txt">
+          <h4>附近没有搜索结果</h4>
+          <span>换个关键词试试吧</span>
+        </div>
+      </div>
       <div>
-        <SearchIndex :data="result.restaurants"/>
-        <SearchIndex :data="result.words"/>
+        <SearchIndex :data="result.restaurants" @click="shopItemClick"/>
+        <SearchIndex :data="result.words" @click="shopItemClick"/>
       </div>
     </div>
+    <div class="container" v-if="showShop">商家信息</div>
   </div>
 </template>
 
@@ -25,23 +33,39 @@ export default {
   data() {
     return {
       key_word: "",
-      result: null
+      result: null,
+      empty: false,
+      showShop: false
     }
   },
   watch: {
     key_word() {
+      this.empty = false;
+      this.showShop = false;
       this.keyWordChange();
     }
   },
   methods: {
     keyWordChange() {
-      console.log(this.key_word);
+      // console.log(this.key_word);
       this.$axios(`/api/profile/typeahead/${this.key_word}`).then(res => {
         // console.log(res.data);
         this.result = res.data;
       }).catch(err => {
         this.result = null;
       });
+    },
+    searchHandle() {
+      if (!this.key_word) return;
+      if (this.result && (this.result.restaurants.length || this.result.words.length)) {
+        // console.log('有内容');
+        this.shopItemClick();
+      } else {
+        this.empty = true;
+      }
+    },
+    shopItemClick() {
+      this.showShop = true;
     }
   },
   components: {
