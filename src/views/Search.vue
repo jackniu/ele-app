@@ -8,16 +8,24 @@
         <button>搜索</button>
       </form>
     </div>
+    <div class="shop" v-if="result">
+      <div>
+        <SearchIndex :data="result.restaurants"/>
+        <SearchIndex :data="result.words"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Header from '../components/Header';
+import SearchIndex from "../components/SearchIndex";
 export default {
   name: 'Search',
   data() {
     return {
-      key_word: ""
+      key_word: "",
+      result: null
     }
   },
   watch: {
@@ -29,14 +37,16 @@ export default {
     keyWordChange() {
       console.log(this.key_word);
       this.$axios(`/api/profile/typeahead/${this.key_word}`).then(res => {
-        console.log(res.data);
+        // console.log(res.data);
+        this.result = res.data;
       }).catch(err => {
         this.result = null;
       });
     }
   },
   components: {
-    Header
+    Header,
+    SearchIndex
   }
 }
 </script>
