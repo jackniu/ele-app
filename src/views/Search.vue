@@ -21,13 +21,23 @@
         <SearchIndex :data="result.words" @click="shopItemClick"/>
       </div>
     </div>
-    <div class="container" v-if="showShop">商家信息</div>
+    <div class="container" v-if="showShop">
+      <!-- 导航 -->
+      <FilterView :filterData="filterData" @update="update"/>
+      <div class="shoplist" v-infinite-scroll="loadMore" :infinite-scroll-disabled="loading">
+        <IndexShop v-for="(item,index) in restaurants" :key="index" :restaurant="item.restaurant"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Header from '../components/Header';
 import SearchIndex from "../components/SearchIndex";
+import FilterView from '../components/FilterView';
+import IndexShop from '../components/IndexShop'
+import { InfiniteScroll } from 'mint-ui';
+
 export default {
   name: 'Search',
   data() {
@@ -35,7 +45,13 @@ export default {
       key_word: "",
       result: null,
       empty: false,
-      showShop: false
+      showShop: false,
+      filterData: null,
+      restaurants: [],
+      page: 0,
+      size: 7,
+      loading: false,
+      data: null
     }
   },
   watch: {
@@ -44,6 +60,12 @@ export default {
       this.showShop = false;
       this.keyWordChange();
     }
+  },
+  created() {
+    this.$axios('/api/profile/filter').then(res => {
+      // console.log(res.data);
+      this.filterData = res.data;
+    });
   },
   methods: {
     keyWordChange() {
@@ -65,12 +87,35 @@ export default {
       }
     },
     shopItemClick() {
+      this.page = 0;
+      this.restaurants = [];
       this.showShop = true;
+    },
+    update(condition) {
+      // console.log(condition);
+      this.data = condition;
+      this.shopItemClick();
+    },
+    loadMore() {
+      this.page++;
+      // 获取商家信息
+      this.$axios.post(`/api/profile/restaurants/${this.page}/${this.size}`, this.data).then(res => {
+        // this.restaurants = res.data;
+        if (res.data.length > 0) {
+          res.data.forEach(item => {
+            this.restaurants.push(item);
+          });
+        } else {
+          this.loading = true;
+        }
+      });
     }
   },
   components: {
     Header,
-    SearchIndex
+    SearchIndex,
+    FilterView,
+    IndexShop
   }
 }
 </script>
